@@ -2,14 +2,13 @@ const express = require("express");
 const configureMiddleware = require("./server-middleware");
 
 const authenticate = require("../auth/auth_middleware");
-const authRouter = require("../auth/auth_router");
 const usersRouter = require("../users/users_router");
 const todosRouter = require("../todos/todos_router");
 
 const server = express();
 configureMiddleware(server);
 
-server.use("/api/auth", authRouter);
+// server.use("/api/auth", authRouter);
 server.use(
   "/api/users",
   // authenticate,

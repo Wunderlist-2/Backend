@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const UsersDb = require("./users_model");
-const restricted = require("../auth/auth-middleware");
+const restricted = require("../auth/auth_middleware");
 
 router.get("/users", restricted, async (req, res) => {
   try {
@@ -38,7 +38,7 @@ router.post("/login", (req, res) => {
           message: `Welcome ${user.username}!`
         });
       } else {
-        res.status(401).json({ message: "You shall not pass!" });
+        res.status(401).json({ message: "Invalid Credentials" });
       }
     })
     .catch(err => {
@@ -62,7 +62,7 @@ router.get("/logout", (req, res) => {
   }
 });
 
-router.delete("/users/:id", restricted, (req, res) => {
+router.delete("/:id", restricted, (req, res) => {
   const { id } = req.params;
   UsersDb.remove(id)
     .then(deletedUser => {
@@ -75,7 +75,7 @@ router.delete("/users/:id", restricted, (req, res) => {
     });
 });
 
-router.put("/users/:id", restricted, verifyChanges, async (req, res) => {
+router.put("/:id", restricted, verifyChanges, async (req, res) => {
   const { id } = req.params;
   const { username, password } = req.body;
   try {
