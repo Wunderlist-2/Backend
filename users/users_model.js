@@ -9,6 +9,16 @@ module.exports = {
   update
 };
 
+// function checkForNullType(item) {
+//   if (item.type === null) {
+//     return {
+//       ...item,
+//       type: "user"
+//     };
+//   }
+//   return item;
+// }
+
 function getUsers() {
   return db("users").select("id", "username");
 }
@@ -33,6 +43,7 @@ function add(user) {
       const [id] = ids;
       return findBy({ id });
     });
+  // .then(ele => checkForNullType(ele));
 }
 
 async function remove(userId) {
