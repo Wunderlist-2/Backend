@@ -2,6 +2,7 @@ const db = require("../database/dbConfig");
 
 module.exports = {
   getUsers,
+  getAllUserInfo,
   findBy,
   add,
   remove,
@@ -12,9 +13,15 @@ function getUsers() {
   return db("users").select("id", "username");
 }
 
+function getAllUserInfo(username) {
+  return db("users")
+    .where("users.username", username)
+    .first();
+}
+
 function findBy(filter) {
   return db("users")
-    .select("id", "username", "password")
+    .select("id", "username", "type")
     .where(filter)
     .first();
 }

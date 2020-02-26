@@ -1,7 +1,7 @@
 const express = require("express");
 const configureMiddleware = require("./server-middleware");
 
-const authenticate = require("../auth/auth_middleware");
+const { restrictedUser } = require("../auth/auth_middleware");
 const usersRouter = require("../users/users_router");
 const todosRouter = require("../todos/todos_router");
 
@@ -14,7 +14,7 @@ server.use(
   usersRouter
 );
 server.use(
-  "/api/myList",
+  "/api/todos",
   // authenticate,
   todosRouter
 );

@@ -2,9 +2,9 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const UsersDb = require("./users_model");
 const TodosDb = require("../todos/todos_model");
-const restricted = require("../auth/auth_middleware");
+const { restrictedUser } = require("../auth/auth_middleware");
 
-router.get("/", restricted, async (req, res) => {
+router.get("/", restrictedUser, async (req, res) => {
   try {
     const users = await UsersDb.getUsers();
     res.status(201).json(users);
@@ -15,11 +15,12 @@ router.get("/", restricted, async (req, res) => {
   }
 });
 
-router.get("/:id", restricted, async (req, res) => {
+router.get("/:id", restrictedUser, async (req, res) => {
   const { id } = req.params;
   try {
     const user = await UsersDb.findBy({ id });
-    res.status(201).json(user);
+    const todosList = await TodosDb.getListByUserId(id);
+    res.status(201).json({ ...user, todos: todosList });
   } catch (err) {
     res.status(501).json({
       message: "could not retrieve user at specified id",
@@ -41,25 +42,21 @@ router.post("/register", verifyNewUser, async (req, res) => {
   }
 });
 
-router.post("/login", (req, res) => {
+router.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  UsersDb.findBy({ username })
-    .then(user => {
-      if (user && bcrypt.compareSync(password, user.password)) {
-        req.session.user = user; //creates session
-
-        res.status(201).json({
-          message: `Welcome ${user.username}!`
-        });
-      } else {
-        res.status(401).json({ message: "Invalid Credentials" });
-      }
-    })
-    .catch(err => {
-      res
-        .status(500)
-        .json({ message: "failed to sign in", error: err.message });
-    });
+  try {
+    const userInfo = await UsersDb.getAllUserInfo(username);
+    if (userInfo && bcrypt.compareSync(password, userInfo.password)) {
+      req.session.user = userInfo; //creates session
+      const user = await UsersDb.findBy({ id: userInfo.id });
+      const todosList = await TodosDb.getListByUserId(userInfo.id);
+      res.status(201).json({ message: "welcome", ...user, todos: todosList });
+    } else {
+      res.status(401).json({ message: "Invalid Credentials" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "failed to sign in", error: err.message });
+  }
 });
 
 router.get("/logout", (req, res) => {
@@ -76,7 +73,7 @@ router.get("/logout", (req, res) => {
   }
 });
 
-router.delete("/:id", restricted, (req, res) => {
+router.delete("/:id", restrictedUser, (req, res) => {
   const { id } = req.params;
   UsersDb.remove(id)
     .then(deletedUser => {
@@ -93,7 +90,7 @@ router.delete("/:id", restricted, (req, res) => {
     });
 });
 
-router.put("/:id", restricted, verifyChanges, async (req, res) => {
+router.put("/:id", restrictedUser, verifyChanges, async (req, res) => {
   const { id } = req.params;
   const { username, password } = req.body;
   try {
@@ -113,7 +110,7 @@ router.put("/:id", restricted, verifyChanges, async (req, res) => {
   }
 });
 
-router.get("/:id/myList", restricted, async (req, res) => {
+router.get("/:id/myList", restrictedUser, async (req, res) => {
   const { id } = req.params;
   try {
     const list = await TodosDb.getListByUserId(id);

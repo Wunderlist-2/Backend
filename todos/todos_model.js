@@ -4,7 +4,10 @@ module.exports = {
   getAllListItems,
   getListByUserId,
   getItemById,
-  getUserId
+  getUserId,
+  add,
+  remove,
+  update
 };
 
 const checkBoolean = obj => {
@@ -27,11 +30,43 @@ function getListByUserId(user_id) {
 function getItemById(item_id) {
   return db("todos")
     .where("todos.id", item_id)
-    .then(ele => checkBoolean(ele));
+    .then(table => table.map(ele => checkBoolean(ele)));
 }
 
 function getUserId(item_id) {
   return db("todos")
     .where("todos.id", item_id)
-    .select("user_id");
+    .select("user_id")
+    .first()
+    .then(ele => ele.user_id);
+}
+
+function add(item) {
+  return db("todos")
+    .insert(item, "id")
+    .then(ids => {
+      const [id] = ids;
+      return getItemById(id);
+    });
+}
+
+async function remove(itemId) {
+  const itemToDelete = await getItemById(itemId);
+  return await db("todos")
+    .where("todos.id", itemId)
+    .del()
+    .then(prom => {
+      if (prom === 1) return itemToDelete;
+      else return prom;
+    });
+}
+
+function update(id, changes) {
+  return db("todos")
+    .where("todos.id", id)
+    .update(changes)
+    .then(prom => {
+      if (prom > 0) return getItemById(id);
+      else return prom;
+    });
 }
