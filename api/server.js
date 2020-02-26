@@ -8,7 +8,6 @@ const todosRouter = require("../todos/todos_router");
 const server = express();
 configureMiddleware(server);
 
-// server.use("/api/auth", authRouter);
 server.use(
   "/api/users",
   // authenticate,

@@ -1,9 +1,10 @@
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const UsersDb = require("./users_model");
+const TodosDb = require("../todos/todos_model");
 const restricted = require("../auth/auth_middleware");
 
-router.get("/users", restricted, async (req, res) => {
+router.get("/", restricted, async (req, res) => {
   try {
     const users = await UsersDb.getUsers();
     res.status(201).json(users);
@@ -11,6 +12,19 @@ router.get("/users", restricted, async (req, res) => {
     res
       .status(501)
       .json({ message: "could not retrieve users", error: err.message });
+  }
+});
+
+router.get("/:id", restricted, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await UsersDb.findBy({ id });
+    res.status(201).json(user);
+  } catch (err) {
+    res.status(501).json({
+      message: "could not retrieve user at specified id",
+      error: err.message
+    });
   }
 });
 
@@ -66,7 +80,11 @@ router.delete("/:id", restricted, (req, res) => {
   const { id } = req.params;
   UsersDb.remove(id)
     .then(deletedUser => {
-      res.status(201).json(deletedUser);
+      if (deletedUser !== 0) res.status(201).json(deletedUser);
+      else
+        res.status(401).json({
+          message: "User not found or already deleted at specified id"
+        });
     })
     .catch(err => {
       res
@@ -92,6 +110,19 @@ router.put("/:id", restricted, verifyChanges, async (req, res) => {
     res
       .status(500)
       .json({ message: "could not update user info", error: err.message });
+  }
+});
+
+router.get("/:id/myList", restricted, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const list = await TodosDb.getListByUserId(id);
+    res.status(201).json(list);
+  } catch (err) {
+    res.status(501).json({
+      message: "could not retrieve Wunderlist items",
+      error: err.message
+    });
   }
 });
 

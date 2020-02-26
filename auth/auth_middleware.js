@@ -1,4 +1,4 @@
-const restricted = (req, res, next) => {
+const restrictedUser = (req, res, next) => {
   if (req.session && req.session.user)
     if (req.params.id) {
       if (req.session.user.id == req.params.id)
@@ -12,4 +12,4 @@ const restricted = (req, res, next) => {
   else res.status(401).json({ message: "Invalid Credentials" });
 };
 
-module.exports = restricted;
+module.exports = restrictedUser;
