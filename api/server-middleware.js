@@ -8,7 +8,7 @@ const sessionConfig = {
   name: "giraffe",
   secret: "one times one never equals two",
   cookie: {
-    maxAge: 1000 * 60 * 2, //2 minutes
+    maxAge: 1000 * 60 * 15, //15 minutes
     secure: false, //true in production
     httpOnly: true
   },
