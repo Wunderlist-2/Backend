@@ -1,25 +1,25 @@
-### Welcome to the Back End of Wunderlist 2.0!
+# Welcome to the Back End of Wunderlist 2.0!
 
-# This app will:
+## This app will:
 
-_ 1. Let you register, login, and edit users 2. Create, read, update, and delete list data
-_ Title of list item
-_ Due date/Date of event
-_ Whether completed (boolean)
+1. Let you register, login, and edit users
+2. Create, read, update, and delete list data
+   _ Title of list item
+   _ Due date/Date of event \* Whether completed (boolean)
 
-# Our Mission Statement:
+## Our Mission Statement:
 
 - Ease of use, convenience!
 
-# Endpoints
+## Endpoints
 
 - | Method | **URL** | Description
 
-<!-- BASE URL -->
+### BASE URL
 
 **https://url-goes-here.com**
 
-<!-- Auth  -->
+### AUTH
 
 **Restrictions: None**
 
@@ -35,7 +35,7 @@ Note: There is a `type` field that is either `admin` or `user`, and defaults to 
 
 - | GET | **/api/auth/logout** | Logs user out, removes session | Returns `/json/` object { message: "Logout success" }
 
-<!-- Users  -->
+### USERS
 
 **Restrictions: Admin only**
 
@@ -45,19 +45,13 @@ Note: There is a `type` field that is either `admin` or `user`, and defaults to 
 
 - | GET | **/api/users/:id** | Returns the user object with the specified `id`, including the corresponding todo list using the `user_id`
 
-**Restrictions: Admin or current user matches url :id**
-
 - | GET | **/api/users/:id/myList** | Returns the todos list array with the specified `user_id`
 
-**Restrictions: Admin or current user matches url :id**
-
-- | DELETE | **/api/users/:id** | Removes the user with the specified `id` | Returns the deleted `username` and `id`.
-
-**Restrictions: Admin or current user matches url :id**
+* | DELETE | **/api/users/:id** | Removes the user with the specified `id` | Returns the deleted `username` and `id`.
 
 - | PUT | **/api/users/:id** | Updates the user with the specified `id` using data from the `request body`. | Returns the modified user object, excluding `password` field (for security).
 
-<!-- Todo list -->
+### TODO LIST
 
 **Restrictions: Admin only**
 
@@ -70,7 +64,5 @@ Note: There is a `type` field that is either `admin` or `user`, and defaults to 
 **Restrictions: Admin or user id matches `user_id` field of the todo item**
 
 - | PUT | **/api/todos/:id** | Takes `id`(list item id) as a parameter from url. Updates the list item using information sent inside the `request body` in `/json/`. | Returns the newly updated list item
-
-**Restrictions: Admin or user id matches `user_id` field of the todo item**
 
 - | DELETE | **/api/todos/:id** | Takes `id`(list item id) as a parameter from url. Deletes the list item. | Returns the list item that was deleted
