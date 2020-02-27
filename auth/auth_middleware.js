@@ -1,5 +1,10 @@
 const TodosDb = require("../todos/todos_model");
 
+const isSignedIn = (req, res, next) => {
+  if (req.session && req.session.user) next();
+  else res.status(400).json({ message: "Not logged in", isLoggedIn: false });
+};
+
 const restrictedUser = (req, res, next) => {
   if (req.session && req.session.user)
     if (req.params.id) {
@@ -11,13 +16,13 @@ const restrictedUser = (req, res, next) => {
       else
         res.status(401).json({
           message:
-            "You do not have sufficient priviledges to access or edit this user."
+            "You do not have sufficient priviledges to perform this action."
         });
     } else if (req.session.user.type === "admin") next();
     else
       res.status(401).json({
         message:
-          "You do not have sufficient priviledges to access or edit this user."
+          "You do not have sufficient priviledges to perform this action."
       });
   else res.status(400).json({ message: "Not logged in", isLoggedIn: false });
 };
@@ -32,20 +37,19 @@ const restrictedItem = async (req, res, next) => {
       else
         res.status(401).json({
           message:
-            "You do not have sufficient priviledges to access or edit this item."
+            "You do not have sufficient priviledges to perform this action."
         });
     } else if (req.session.user.type === "admin") next();
     else
       res.status(401).json({
         message:
-          "You do not have sufficient priviledges to access or edit this user."
+          "You do not have sufficient priviledges to perform this action."
       });
   else res.status(400).json({ message: "Not logged in", isLoggedIn: false });
 };
 
 const adminOnly = (req, res, next) => {
   if (req.session && req.session.user) {
-    console.log("inside", req.session);
     if (req.session.user.type === "admin") next();
     else
       res.status(401).json({
@@ -53,9 +57,8 @@ const adminOnly = (req, res, next) => {
           "You do not have sufficient priviledges to access or edit this content."
       });
   } else {
-    console.log("outside", req.session.user);
     res.status(400).json({ message: "Not logged in", isLoggedIn: false });
   }
 };
 
-module.exports = { restrictedUser, adminOnly, restrictedItem };
+module.exports = { restrictedUser, adminOnly, restrictedItem, isSignedIn };

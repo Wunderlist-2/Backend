@@ -1,6 +1,10 @@
 const router = require("express").Router();
 const TodosDb = require("./todos_model");
-const { adminOnly, restrictedItem } = require("../auth/auth_middleware");
+const {
+  adminOnly,
+  restrictedItem,
+  isSignedIn
+} = require("../auth/auth_middleware");
 
 router.get("/", adminOnly, async (req, res) => {
   try {
@@ -27,7 +31,7 @@ router.get("/:id", restrictedItem, async (req, res) => {
   }
 });
 
-router.post("/", verifyNewItem, async (req, res) => {
+router.post("/", isSignedIn, verifyNewItem, async (req, res) => {
   const newItem = req.body;
   try {
     const postedItem = await TodosDb.add(newItem);

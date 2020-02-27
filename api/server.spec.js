@@ -1,18 +1,14 @@
 const request = require("supertest");
 const bcrypt = require("bcryptjs");
-const server = require("./server.js");
-const db = require("../database/dbConfig");
 
-// beforeEach(async () => {
-//   db("users")
-//     .truncate()
-//     .then(() =>
-//       db("users").insert({
-//         username: "test1",
-//         password: bcrypt.hashSync("test1", 12)
-//       })
-//     );
-// });
+const sinon = require("sinon");
+const db = require("../database/dbConfig");
+const auth = require("../auth/auth_middleware");
+
+const restrictedUserStub = sinon.stub(auth, "restrictedUser");
+const adminOnlyStub = sinon.stub(auth, "adminOnly");
+
+const server = require("./server.js");
 
 describe("server.js", () => {
   describe("index route", () => {
@@ -42,19 +38,29 @@ describe("server.js", () => {
       expect(response.type).toEqual("application/json");
     });
   }),
-    // describe("todos route", () => {
-    //   it("should retrieve list successfully", async () => {
-    //     const expectedStatusCode = 201;
-    //     const user = await request(server)
-    //       .get("/api/users/login")
-    //       .send({ username: "admin", password: "password" });
-    //     const response = await request(server).get("/api/todos/");
+    describe("todos route", () => {
+      it("should retrieve list successfully with bypass of middleware", async () => {
+        const expectedStatusCode = 200;
+        adminOnlyStub.callsFake((req, res, next) => next());
+        const response = await request(server).get("/api/todos/");
+        expect(response.status).toEqual(expectedStatusCode);
+      });
+      // it("should create new todos item", async () => {
+      //   const expectedBodyTitle = "spongebob";
+      //   const response = await request(server)
+      //     .post("/api/todos/")
+      //     .send({ title: "spongebob", user_id: 0 });
 
-    //     expect(response.status).toEqual(expectedStatusCode);
-    //   });
-    // }),
+      //   expect(response.body[0].title).toEqual(expectedBodyTitle);
+      // });
+    }),
     describe("users route", () => {
       it("should login successfully with test1 user", async () => {
+        await db("users").truncate();
+        await db("users").insert({
+          username: "test1",
+          password: bcrypt.hashSync("test1", 12)
+        });
         const expectedStatusCode = 200;
         const response = await request(server)
           .post("/api/users/login")
@@ -62,16 +68,11 @@ describe("server.js", () => {
 
         expect(response.status).toEqual(expectedStatusCode);
       });
-      // it("should login and show session", async () => {
-      //   const expectedSessionUser = "admin";
-      //   const response = await request(server)
-      //     .post("/api/users/login")
-      //     .send({ username: "admin", password: "password" });
-
-      //   expect().toEqual(expectedSessionUser);
-      // });
       it("should fail to login with error message", async () => {
-        const expectedBody = { message: "Invalid Credentials" };
+        const expectedBody = {
+          message: "Invalid Credentials",
+          isLoggedIn: false
+        };
         const response = await request(server)
           .post("/api/users/login")
           .send({ username: "wrongUsername", password: "wrongPassword" });
@@ -79,6 +80,7 @@ describe("server.js", () => {
         expect(response.body).toEqual(expectedBody);
       });
       it("should allow creation of new user test4", async () => {
+        // await db("users").truncate();
         const expectedStatusCode = 201;
 
         const response = await request(server)

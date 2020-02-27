@@ -2,7 +2,11 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const UsersDb = require("./users_model");
 const TodosDb = require("../todos/todos_model");
-const { restrictedUser, adminOnly } = require("../auth/auth_middleware");
+const {
+  restrictedUser,
+  adminOnly,
+  isSignedIn
+} = require("../auth/auth_middleware");
 
 router.get("/", adminOnly, async (req, res) => {
   try {
@@ -70,22 +74,13 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.get("/logout", (req, res) => {
-  if (req.session)
-    req.session.destroy(err => {
-      if (err) {
-        res
-          .status(400)
-          .json({ message: "could not logout", error: err.message });
-      } else
-        res.status(200).json({ message: `Logout success`, isLoggedIn: false });
-    });
-  else {
-    res.status(400).json({
-      message: "Cannot logout. Not currently logged in",
-      isLoggedIn: false
-    });
-  }
+router.post("/logout", isSignedIn, (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      res.status(400).json({ message: "could not logout", error: err.message });
+    } else
+      res.status(200).json({ message: `Logout success`, isLoggedIn: false });
+  });
 });
 
 router.delete("/:id", restrictedUser, (req, res) => {
