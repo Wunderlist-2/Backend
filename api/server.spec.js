@@ -45,8 +45,10 @@ describe("server.js", () => {
     describe("todos route", () => {
       it("should retrieve list successfully", async () => {
         const expectedStatusCode = 201;
-        const response = await request(server).get("/api/myList/");
-        // .send({ username: "test1", password: "test1" });
+        const user = await request(server)
+          .get("/api/users/login")
+          .send({ username: "admin", password: "password" });
+        const response = await request(server).get("/api/todos/");
 
         expect(response.status).toEqual(expectedStatusCode);
       });
@@ -59,6 +61,14 @@ describe("server.js", () => {
           .send({ username: "test1", password: "test1" });
 
         expect(response.status).toEqual(expectedStatusCode);
+      });
+      it("should login and show session", async () => {
+        const expectedSessionUser = "admin";
+        const response = await request(server)
+          .post("/api/users/login")
+          .send({ username: "admin", password: "password" });
+
+        expect().toEqual(expectedSessionUser);
       });
       it("should fail to login with error message", async () => {
         const expectedBody = { message: "Invalid Credentials" };

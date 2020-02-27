@@ -1,6 +1,7 @@
 # Welcome to the Back End of Wunderlist 2.0!
 
 ## This app will:
+
 1. Let you register, login, and edit users
 2. Create, read, update, and delete list data
         * Title of list item
@@ -11,9 +12,12 @@
 
 * Ease of use, convenience!
 
+
 ## Endpoints
 
+
 * | Method | **URL** | Description
+
 
 ### BASE URL
 
@@ -45,6 +49,7 @@ Note: There is a `type` field that is either `admin` or `user`, and defaults to 
 
 * | GET | **/api/users/:id** | Returns the user object with the specified `id`, including the corresponding todo list using the `user_id`
 
+
 * | GET | **/api/users/:id/myList** | Returns the todos list array with the specified `user_id`
 
 
@@ -52,6 +57,7 @@ Note: There is a `type` field that is either `admin` or `user`, and defaults to 
 
 
 * | PUT | **/api/users/:id** | Updates the user with the specified `id` using data from the `request body`. | Returns the modified user object, excluding `password` field (for security).
+
 
 ### TODO LIST
 
@@ -65,6 +71,8 @@ Note: There is a `type` field that is either `admin` or `user`, and defaults to 
 
 **Restrictions: Admin or user id matches `user_id` field of the todo item**
 
+
 * | PUT | **/api/todos/:id** | Takes `id`(list item id) as a parameter from url. Updates the list item using information sent inside the `request body` in `/json/`. | Returns the newly updated list item
 
 * | DELETE | **/api/todos/:id** | Takes `id`(list item id) as a parameter from url. Deletes the list item. | Returns the list item that was deleted
+

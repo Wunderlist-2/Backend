@@ -6,6 +6,7 @@
   "author": "Kyle Richardson <kyle.richardson1@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "start": "node index.js",
     "server": "nodemon index.js",
     "test": "cross-env DB_ENV=testing jest --watch"
   },
