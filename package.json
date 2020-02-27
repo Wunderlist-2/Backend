@@ -1,5 +1,5 @@
 {
-  "name": "wunderlist-2.0",
+  "name": "wunderlist-v2",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/kyle-richardson/Backend.git",
@@ -14,6 +14,7 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "cross-env": "^7.0.0",
+    "dotenv-extended": "^2.7.1",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "helmet": "^3.21.3",
@@ -22,8 +23,8 @@
     "sqlite3": "^4.1.1"
   },
   "devDependencies": {
+    "jest": "^25.1.0",
     "nodemon": "^2.0.2",
-    "supertest": "^4.0.2",
-    "jest": "^25.1.0"
+    "supertest": "^4.0.2"
   }
 }

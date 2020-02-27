@@ -9,17 +9,17 @@ const restrictedUser = (req, res, next) => {
       )
         next();
       else
-        res.status(402).json({
+        res.status(401).json({
           message:
             "You do not have sufficient priviledges to access or edit this user."
         });
     } else if (req.session.user.type === "admin") next();
     else
-      res.status(402).json({
+      res.status(401).json({
         message:
           "You do not have sufficient priviledges to access or edit this user."
       });
-  else res.status(401).json({ message: "Not logged in" });
+  else res.status(400).json({ message: "Not logged in", isLoggedIn: false });
 };
 
 const restrictedItem = async (req, res, next) => {
@@ -30,28 +30,28 @@ const restrictedItem = async (req, res, next) => {
       if (req.session.user.id == userId || req.session.user.type === "admin")
         next();
       else
-        res.status(402).json({
+        res.status(401).json({
           message:
             "You do not have sufficient priviledges to access or edit this item."
         });
     } else if (req.session.user.type === "admin") next();
     else
-      res.status(402).json({
+      res.status(401).json({
         message:
           "You do not have sufficient priviledges to access or edit this user."
       });
-  else res.status(401).json({ message: "Not logged in" });
+  else res.status(400).json({ message: "Not logged in", isLoggedIn: false });
 };
 
 const adminOnly = (req, res, next) => {
   if (req.session && req.session.user) {
     if (req.session.user.type === "admin") next();
     else
-      res.status(402).json({
+      res.status(401).json({
         message:
           "You do not have sufficient priviledges to access or edit this content."
       });
-  } else res.status(401).json({ message: "Not logged in" });
+  } else res.status(400).json({ message: "Not logged in", isLoggedIn: false });
 };
 
 module.exports = { restrictedUser, adminOnly, restrictedItem };

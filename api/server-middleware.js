@@ -5,11 +5,11 @@ const session = require("express-session");
 const logger = require("./logger");
 
 const sessionConfig = {
-  name: "giraffe",
-  secret: "one times one never equals two",
+  name: process.env.name,
+  secret: process.env.secret,
   cookie: {
-    maxAge: 1000 * 60 * 15, //15 minutes
-    secure: false, //true in production
+    maxAge: 1000 * 60 * 60, //60 minutes
+    secure: process.env.secure,
     httpOnly: true
   },
   resave: false,
