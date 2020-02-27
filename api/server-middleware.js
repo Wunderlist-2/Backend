@@ -1,15 +1,16 @@
 const express = require("express");
+const { name, secret, secure } = require("../config");
 const helmet = require("helmet");
 const cors = require("cors");
 const session = require("express-session");
 const logger = require("./logger");
 
 const sessionConfig = {
-  name: process.env.name,
-  secret: process.env.secret,
+  name: name,
+  secret: secret,
   cookie: {
     maxAge: 1000 * 60 * 60, //60 minutes
-    secure: process.env.secure,
+    secure: secure,
     httpOnly: true
   },
   resave: false,
