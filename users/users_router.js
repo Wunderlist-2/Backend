@@ -2,9 +2,9 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 const UsersDb = require("./users_model");
 const TodosDb = require("../todos/todos_model");
-const { restrictedUser } = require("../auth/auth_middleware");
+const { restrictedUser, adminOnly } = require("../auth/auth_middleware");
 
-router.get("/", restrictedUser, async (req, res) => {
+router.get("/", adminOnly, async (req, res) => {
   try {
     const users = await UsersDb.getUsers();
     res.status(200).json(users);
