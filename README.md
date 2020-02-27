@@ -24,6 +24,8 @@
 
 ### AUTH
 
+Note: There is a boolean property `isLoggedIn` included in login and logout endpoint returned objects as well as authentication middleware to help relay if a user session cookie is still active
+
 **Restrictions: None**
 
 - | POST | **/api/auth/register** | Registers a user using the information sent inside the `request body` in `/json/`. Example body: { "username": "test1", "password": "test1" } | Returns newly created `/json/` object (excluding password) | Requires `username` and `password` fields. Uses sessions for validation.
@@ -32,11 +34,12 @@ Note: There is a `type` field that is either `admin` or `user`, and defaults to 
 
 **Restrictions: None**
 
-- | POST | **/api/auth/login** | Logs in a user using the information sent inside the `request body` in `/json`. Example body: { "username": "admin", "password": "password" }. | Returns `/json/` object with welcome message, user info (excluding password) and the list of todo items in the wunderlist | Requires `username` and `password` fields.
+- | POST | **/api/auth/login** | Logs in a user using the information sent inside the `request body` in `/json`. Example body: { "username": "admin", "password": "password" }. | Returns `/json/` object {
+  message: 'welcome', ...user (excluding password), todos: [...todos]isLoggedIn: true }| Requires `username` and `password` fields.
 
-**Restrictions: None**
+**Restrictions: Logged in**
 
-- | GET | **/api/auth/logout** | Logs user out, removes session | Returns `/json/` object { message: "Logout success" }
+- | POST | **/api/auth/logout** | Logs user out, removes session | Returns `/json/` object { message: "Logout success", isLoggedIn: false }
 
 ### USERS
 
@@ -60,11 +63,11 @@ Note: There is a `type` field that is either `admin` or `user`, and defaults to 
 
 - | GET | **/api/todos** | Takes Returns array of all todo items.
 
-**Restrictions: Must be signed in to any user**
+**Restrictions: `user_id` matches logged in user `id`**
 
 - | POST | **/api/todos** | Adds a list item to Wunderlist using information sent inside the `request body` in `/json/`. Example body: { "user_id": 1, "title": "Take out trash", "due_date": null, "date_completed": null, "completed": "false" } `user_id` and `title` are **required**. Defaults for `due_date` and `date_completed` is **null**, default `completed` is **false**. | Returns newly added list item
 
-**Restrictions: Admin or user id matches `user_id` field of the todo item**
+**Restrictions: Admin or user `id` matches `user_id` field of the todo item**
 
 - | PUT | **/api/todos/:id** | Takes `id`(list item id) as a parameter from url. Updates the list item using information sent inside the `request body` in `/json/`. | Returns the newly updated list item
 
