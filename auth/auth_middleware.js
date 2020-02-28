@@ -49,6 +49,7 @@ const restrictedItem = async (req, res, next) => {
 };
 
 const adminOnly = (req, res, next) => {
+  console.log(req.session);
   if (req.session && req.session.user) {
     if (req.session.user.type === "admin") next();
     else

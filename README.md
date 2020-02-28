@@ -28,18 +28,18 @@ Note: There is a boolean property `isLoggedIn` included in login and logout endp
 
 **Restrictions: None**
 
-- | POST | **/api/auth/register** | Registers a user using the information sent inside the `request body` in `/json/`. Example body: { "username": "test1", "password": "test1" } | Returns newly created `/json/` object (excluding password) | Requires `username` and `password` fields. Uses sessions for validation.
+- | POST | **/api/users/register** | Registers a user using the information sent inside the `request body` in `/json/`. Example body: { "username": "test1", "password": "test1" } | Returns newly created `/json/` object (excluding password) | Requires `username` and `password` fields. Uses sessions for validation.
 
 Note: There is a `type` field that is either `admin` or `user`, and defaults to `user`. The only way to add an `admin` user is hard coded in database.
 
 **Restrictions: None**
 
-- | POST | **/api/auth/login** | Logs in a user using the information sent inside the `request body` in `/json`. Example body: { "username": "admin", "password": "password" }. | Returns `/json/` object {
-  message: 'welcome', ...user (excluding password), todos: [...todos]isLoggedIn: true }| Requires `username` and `password` fields.
+- | POST | **/api/users/login** | Logs in a user using the information sent inside the `request body` in `/json`. Example body: { "username": "admin", "password": "password" }. | Returns `/json/` object {
+  message: 'welcome', ...user (excluding password), todos: [...todos], isLoggedIn: true }| Requires `username` and `password` fields.
 
 **Restrictions: Logged in**
 
-- | POST | **/api/auth/logout** | Logs user out, removes session | Returns `/json/` object { message: "Logout success", isLoggedIn: false }
+- | POST | **/api/users/logout** | Logs user out, removes session | Returns `/json/` object { message: "Logout success", isLoggedIn: false }
 
 ### USERS
 

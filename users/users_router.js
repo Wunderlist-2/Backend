@@ -52,6 +52,7 @@ router.post("/login", async (req, res) => {
     const userInfo = await UsersDb.getAllUserInfo(username);
     if (userInfo && bcrypt.compareSync(password, userInfo.password)) {
       req.session.user = userInfo; //creates session
+      console.log(req.session);
       const user = await UsersDb.findBy({ id: userInfo.id });
       const todosList = await TodosDb.getListByUserId(userInfo.id);
       res.status(200).json({
