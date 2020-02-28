@@ -17,7 +17,9 @@ exports.up = function(knex) {
         .unsigned()
         .notNullable()
         .references("id")
-        .inTable("users");
+        .inTable("users")
+        .onDelete("CASCADE")
+        .onUpdate("CASCADE");
       todos.dateTime("due_date", 255);
       todos.dateTime("date_completed", 255);
       todos.boolean("completed").defaultTo(false);

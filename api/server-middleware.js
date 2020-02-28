@@ -1,15 +1,17 @@
 const express = require("express");
+const session = require("express-session");
+// const { name, secret, secure } = require("../config");
 const helmet = require("helmet");
 const cors = require("cors");
-const session = require("express-session");
+
 const logger = require("./logger");
 
 const sessionConfig = {
   name: "giraffe",
   secret: "one times one never equals two",
   cookie: {
-    maxAge: 1000 * 60 * 15, //15 minutes
-    secure: false, //true in production
+    maxAge: 1000 * 60 * 60, //60 minutes
+    secure: false,
     httpOnly: true
   },
   resave: false,

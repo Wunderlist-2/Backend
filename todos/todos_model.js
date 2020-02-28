@@ -23,13 +23,17 @@ function getAllListItems() {
 }
 
 function getListByUserId(user_id) {
-  return db("todos")
-    .where("todos.user_id", user_id)
+  return db("todos as t")
+    .join("users as u", "t.user_id", "u.id")
+    .select("t.*", "u.username")
+    .where("t.user_id", user_id)
     .then(table => table.map(ele => checkBoolean(ele)));
 }
 function getItemById(item_id) {
-  return db("todos")
-    .where("todos.id", item_id)
+  return db("todos as t")
+    .join("users as u", "t.user_id", "u.id")
+    .where("t.id", item_id)
+    .select("t.*", "u.username")
     .then(table => table.map(ele => checkBoolean(ele)));
 }
 
