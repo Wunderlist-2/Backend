@@ -42,14 +42,14 @@ module.exports = {
     },
     seeds: {
       directory: "./db/seeds"
-    },
-    production: {
-      client: "pg",
-      connection: db_url,
-      migrations: {
-        directory: "./db/migrations"
-      },
-      seeds: { directory: "./db/seeds" }
     }
+  },
+  production: {
+    client: "pg",
+    connection: db_url,
+    migrations: {
+      directory: "./db/migrations"
+    },
+    seeds: { directory: "./db/seeds" }
   }
 };
