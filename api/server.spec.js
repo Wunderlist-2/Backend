@@ -13,7 +13,7 @@ const server = require("./server.js");
 describe("server.js", () => {
   describe("index route", () => {
     it("should set testing env", () => {
-      expect(process.env.DB_ENV).toBe("testing");
+      expect(process.env.NODE_ENV).toBe("testing");
     });
 
     it("should return an OK status code from the index route", async () => {
