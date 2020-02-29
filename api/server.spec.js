@@ -1,16 +1,19 @@
 const request = require("supertest");
-const bcrypt = require("bcryptjs");
 
 const sinon = require("sinon");
 const db = require("../db/knex");
 const auth = require("../auth/auth_middleware");
 
-const restrictedUserStub = sinon.stub(auth, "restrictedUser");
 const adminOnlyStub = sinon.stub(auth, "adminOnly");
 
 const server = require("./server.js");
 
-const knexCleaner = require("knex-cleaner");
+beforeEach(async () => {
+  await db.seed.run();
+});
+afterAll(async () => {
+  await db.destroy();
+});
 
 describe("server.js", () => {
   describe("index route", () => {
@@ -58,6 +61,7 @@ describe("server.js", () => {
     }),
     describe("users route", () => {
       it("should login successfully with test1 user", async () => {
+        db.raw("SET foreign_key_checks = 0");
         db.seed.run();
         const expectedStatusCode = 200;
         const response = await request(server)
