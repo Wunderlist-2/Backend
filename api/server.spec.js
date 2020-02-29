@@ -8,9 +8,6 @@ const adminOnlyStub = sinon.stub(auth, "adminOnly");
 
 const server = require("./server.js");
 
-beforeEach(async () => {
-  await db.seed.run();
-});
 afterAll(async () => {
   await db.destroy();
 });
@@ -44,6 +41,9 @@ describe("server.js", () => {
     });
   }),
     describe("todos route", () => {
+      beforeEach(async () => {
+        await db.seed.run();
+      });
       it("should retrieve list successfully with bypass of middleware", async () => {
         const expectedStatusCode = 200;
         adminOnlyStub.callsFake((req, res, next) => next());
@@ -60,6 +60,9 @@ describe("server.js", () => {
       // });
     }),
     describe("users route", () => {
+      beforeEach(async () => {
+        await db.seed.run();
+      });
       it("should login successfully with test1 user", async () => {
         db.raw("SET foreign_key_checks = 0");
         db.seed.run();
