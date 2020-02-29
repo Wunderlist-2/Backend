@@ -2,13 +2,15 @@ const request = require("supertest");
 const bcrypt = require("bcryptjs");
 
 const sinon = require("sinon");
-const db = require("../database/dbConfig");
+const db = require("../db/knex");
 const auth = require("../auth/auth_middleware");
 
 const restrictedUserStub = sinon.stub(auth, "restrictedUser");
 const adminOnlyStub = sinon.stub(auth, "adminOnly");
 
 const server = require("./server.js");
+
+const knexCleaner = require("knex-cleaner");
 
 describe("server.js", () => {
   describe("index route", () => {
@@ -56,11 +58,7 @@ describe("server.js", () => {
     }),
     describe("users route", () => {
       it("should login successfully with test1 user", async () => {
-        await db("users").truncate();
-        await db("users").insert({
-          username: "test1",
-          password: bcrypt.hashSync("test1", 12)
-        });
+        db.seed.run();
         const expectedStatusCode = 200;
         const response = await request(server)
           .post("/api/users/login")
@@ -80,7 +78,6 @@ describe("server.js", () => {
         expect(response.body).toEqual(expectedBody);
       });
       it("should allow creation of new user test4", async () => {
-        // await db("users").truncate();
         const expectedStatusCode = 201;
 
         const response = await request(server)
