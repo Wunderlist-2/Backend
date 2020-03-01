@@ -74,3 +74,5 @@ function update(id, changes) {
       else return prom;
     });
 }
+
+function setRecurring(id, sequence) {}

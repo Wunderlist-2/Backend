@@ -23,6 +23,7 @@ exports.up = function(knex) {
       todos.timestamp("due_date");
       todos.timestamp("date_completed");
       todos.boolean("completed").defaultTo(false);
+      todos.string("recurring_times");
     });
 };
 

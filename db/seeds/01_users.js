@@ -1,11 +1,12 @@
 const bcrypt = require("bcryptjs");
+const { admin_pass, admin_user } = require("../../config");
 
 exports.seed = function(knex) {
   return knex("users").insert([
     {
       id: 0,
-      username: "wunderAdmin",
-      password: bcrypt.hashSync("WunderLi$t", 12),
+      username: admin_user,
+      password: bcrypt.hashSync(admin_pass, 12),
       type: "admin"
     },
     {
