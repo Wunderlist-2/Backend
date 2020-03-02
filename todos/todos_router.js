@@ -80,7 +80,7 @@ router.put("/:id", restrictedItem, async (req, res) => {
 
 function verifyNewItem(req, res, next) {
   const newItem = req.body;
-  if (newItem.title && newItem.user_id) next();
+  if (newItem.title && (newItem.user_id || newItem.user_id === 0)) next();
   else res.status(403).json({ message: "title and user_id fields required" });
 }
 
