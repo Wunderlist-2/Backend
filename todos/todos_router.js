@@ -65,8 +65,19 @@ router.delete("/:id", restrictedItem, async (req, res) => {
 
 router.put("/:id", restrictedItem, async (req, res) => {
   const { id } = req.params;
-  const changes = req.body;
+
   try {
+    const preUpdate = await TodosDb.getItemById(id);
+    const changes = {
+      ...req.body,
+      date_completed: req.body.date_completed
+        ? req.body.date_completed
+        : req.body.completed
+        ? !preUpdate.completed
+          ? new Date()
+          : preUpdate.date_completed
+        : null
+    };
     const changedItem = await TodosDb.update(id, changes);
     if (changedItem === 0) res.status(400).json({ message: "no changes made" });
     else res.status(200).json(changedItem);

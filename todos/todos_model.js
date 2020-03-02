@@ -34,7 +34,7 @@ function getItemById(item_id) {
     .join("users as u", "t.user_id", "u.id")
     .where("t.id", item_id)
     .select("t.*", "u.username")
-    .then(table => table.map(ele => checkBoolean(ele)));
+    .then(table => checkBoolean(table[0]));
 }
 
 function getUserId(item_id) {
