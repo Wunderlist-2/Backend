@@ -32,8 +32,15 @@ router.get("/:id", restrictedItem, async (req, res) => {
 });
 
 router.post("/", isSignedIn, verifyNewItem, async (req, res) => {
-  const newItem = req.body;
   try {
+    const newItem = {
+      ...req.body,
+      date_completed: req.body.date_completed
+        ? req.body.date_completed
+        : req.body.completed
+        ? new Date()
+        : null
+    };
     const postedItem = await TodosDb.add(newItem);
     res.status(201).json(postedItem);
   } catch (err) {
