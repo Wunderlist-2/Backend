@@ -1,7 +1,6 @@
 const cleaner = require("knex-cleaner");
 var options = {
-  mode: "delete", // Valid options 'truncate', 'delete'
-  restartIdentity: true, // Used to tell PostgresSQL to reset the ID counter
+  mode: "truncate", // Valid options 'truncate', 'delete'
   ignoreTables: ["knex_migrations", "knex_migrations_lock"]
 };
 

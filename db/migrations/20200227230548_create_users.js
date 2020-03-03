@@ -1,7 +1,7 @@
 exports.up = function(knex) {
   return knex.schema
     .createTable("users", users => {
-      users.increments();
+      users.increments("id");
       users
         .string("username")
         .notNullable()
@@ -10,11 +10,11 @@ exports.up = function(knex) {
       users.string("type").defaultTo("user");
     })
     .createTable("todos", todos => {
-      todos.increments();
+      todos.increments("id");
       todos.string("title").notNullable();
       todos
         .integer("user_id")
-        .unsigned()
+        // .unsigned()
         .notNullable()
         .references("id")
         .inTable("users")
@@ -25,10 +25,10 @@ exports.up = function(knex) {
       todos.boolean("completed").defaultTo(false);
     })
     .createTable("recurring", recur => {
-      recur.increments();
+      recur.increments("id");
       recur
         .integer("todo_id")
-        .unsigned()
+        // .unsigned()
         .notNullable()
         .references("id")
         .inTable("todos")

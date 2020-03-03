@@ -1,8 +1,7 @@
 exports.seed = function(knex) {
   return knex("recurring").insert([
     {
-      id: 0,
-      todo_id: 0,
+      todo_id: 1,
       sunday: false,
       monday: false,
       tuesday: true,
@@ -12,8 +11,7 @@ exports.seed = function(knex) {
       saturday: false
     },
     {
-      id: 1,
-      todo_id: 1,
+      todo_id: 2,
       sunday: true,
       monday: true,
       tuesday: true,
@@ -23,8 +21,7 @@ exports.seed = function(knex) {
       saturday: false
     },
     {
-      id: 2,
-      todo_id: 2,
+      todo_id: 3,
       sunday: false,
       monday: true,
       tuesday: false,
