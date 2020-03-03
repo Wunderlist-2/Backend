@@ -23,10 +23,52 @@ exports.up = function(knex) {
       todos.timestamp("due_date");
       todos.timestamp("date_completed");
       todos.boolean("completed").defaultTo(false);
-      todos.string("recurring_times");
+    })
+    .createTable("recurring", recur => {
+      recur.increments();
+      recur
+        .integer("todo_id")
+        .unsigned()
+        .notNullable()
+        .references("id")
+        .inTable("todos")
+        .onDelete("CASCADE")
+        .onUpdate("CASCADE");
+
+      recur
+        .boolean("sunday")
+        .notNullable()
+        .defaultTo(false);
+      recur
+        .boolean("monday")
+        .notNullable()
+        .defaultTo(false);
+      recur
+        .boolean("tuesday")
+        .notNullable()
+        .defaultTo(false);
+      recur
+        .boolean("wednesday")
+        .notNullable()
+        .defaultTo(false);
+      recur
+        .boolean("thursday")
+        .notNullable()
+        .defaultTo(false);
+      recur
+        .boolean("friday")
+        .notNullable()
+        .defaultTo(false);
+      recur
+        .boolean("saturday")
+        .notNullable()
+        .defaultTo(false);
     });
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTableIfExists("todos").dropTableIfExists("users");
+  return knex.schema
+    .dropTableIfExists("recurring")
+    .dropTableIfExists("todos")
+    .dropTableIfExists("users");
 };
