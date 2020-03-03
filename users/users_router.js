@@ -38,7 +38,7 @@ router.post("/register", verifyNewUser, async (req, res) => {
   try {
     const newUser = await UsersDb.add({
       username: username,
-      password: bcrypt.hashSync(password, 14)
+      password: bcrypt.hashSync(password, 12)
     });
     res.status(201).json(newUser);
   } catch (err) {
@@ -106,7 +106,7 @@ router.put("/:id", restrictedUser, verifyChanges, async (req, res) => {
   try {
     let updatedUser;
     if (password) {
-      const newPass = bcrypt.hashSync(password, 14);
+      const newPass = bcrypt.hashSync(password, 12);
       updatedUser = await UsersDb.update(id, {
         username: username,
         password: newPass

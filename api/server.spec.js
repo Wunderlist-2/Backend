@@ -1,19 +1,21 @@
 const request = require("supertest");
-const bcrypt = require("bcryptjs");
 
 const sinon = require("sinon");
-const db = require("../database/dbConfig");
+const db = require("../db/knex");
 const auth = require("../auth/auth_middleware");
 
-const restrictedUserStub = sinon.stub(auth, "restrictedUser");
 const adminOnlyStub = sinon.stub(auth, "adminOnly");
 
 const server = require("./server.js");
 
+afterAll(async () => {
+  await db.destroy();
+});
+
 describe("server.js", () => {
   describe("index route", () => {
     it("should set testing env", () => {
-      expect(process.env.DB_ENV).toBe("testing");
+      expect(process.env.NODE_ENV).toBe("testing");
     });
 
     it("should return an OK status code from the index route", async () => {
@@ -39,6 +41,9 @@ describe("server.js", () => {
     });
   }),
     describe("todos route", () => {
+      beforeEach(async () => {
+        await db.seed.run();
+      });
       it("should retrieve list successfully with bypass of middleware", async () => {
         const expectedStatusCode = 200;
         adminOnlyStub.callsFake((req, res, next) => next());
@@ -55,12 +60,12 @@ describe("server.js", () => {
       // });
     }),
     describe("users route", () => {
+      beforeEach(async () => {
+        await db.seed.run();
+      });
       it("should login successfully with test1 user", async () => {
-        await db("users").truncate();
-        await db("users").insert({
-          username: "test1",
-          password: bcrypt.hashSync("test1", 12)
-        });
+        db.raw("SET foreign_key_checks = 0");
+        db.seed.run();
         const expectedStatusCode = 200;
         const response = await request(server)
           .post("/api/users/login")
@@ -80,7 +85,6 @@ describe("server.js", () => {
         expect(response.body).toEqual(expectedBody);
       });
       it("should allow creation of new user test4", async () => {
-        // await db("users").truncate();
         const expectedStatusCode = 201;
 
         const response = await request(server)

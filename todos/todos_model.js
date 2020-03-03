@@ -1,4 +1,4 @@
-const db = require("../database/dbConfig");
+const db = require("../db/knex");
 
 module.exports = {
   getAllListItems,
@@ -34,7 +34,8 @@ function getItemById(item_id) {
     .join("users as u", "t.user_id", "u.id")
     .where("t.id", item_id)
     .select("t.*", "u.username")
-    .then(table => table.map(ele => checkBoolean(ele)));
+    .first()
+    .then(item => checkBoolean(item));
 }
 
 function getUserId(item_id) {
@@ -74,3 +75,5 @@ function update(id, changes) {
       else return prom;
     });
 }
+
+function setRecurring(id, sequence) {}

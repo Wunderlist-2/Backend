@@ -28,18 +28,18 @@ Note: There is a boolean property `isLoggedIn` included in login and logout endp
 
 **Restrictions: None**
 
-- | POST | **/api/auth/register** | Registers a user using the information sent inside the `request body` in `/json/`. Example body: { "username": "test1", "password": "test1" } | Returns newly created `/json/` object (excluding password) | Requires `username` and `password` fields. Uses sessions for validation.
+- | POST | **/api/users/register** | Registers a user using the information sent inside the `request body` in `/json/`. Example body: { "username": "test1", "password": "test1" } | Returns newly created `/json/` object (excluding password) | Requires `username` and `password` fields. Uses sessions for validation.
 
 Note: There is a `type` field that is either `admin` or `user`, and defaults to `user`. The only way to add an `admin` user is hard coded in database.
 
 **Restrictions: None**
 
-- | POST | **/api/auth/login** | Logs in a user using the information sent inside the `request body` in `/json`. Example body: { "username": "admin", "password": "password" }. | Returns `/json/` object {
-  message: 'welcome', ...user (excluding password), todos: [...todos]isLoggedIn: true }| Requires `username` and `password` fields.
+- | POST | **/api/users/login** | Logs in a user using the information sent inside the `request body` in `/json`. Example body: { "username": "admin", "password": "password" }. | Returns `/json/` object {
+  message: 'welcome', ...user (excluding password), todos: [...todos], isLoggedIn: true }| Requires `username` and `password` fields.
 
 **Restrictions: Logged in**
 
-- | POST | **/api/auth/logout** | Logs user out, removes session | Returns `/json/` object { message: "Logout success", isLoggedIn: false }
+- | POST | **/api/users/logout** | Logs user out, removes session | Returns `/json/` object { message: "Logout success", isLoggedIn: false }
 
 ### USERS
 
@@ -63,12 +63,19 @@ Note: There is a `type` field that is either `admin` or `user`, and defaults to 
 
 - | GET | **/api/todos** | Takes Returns array of all todo items.
 
-**Restrictions: `user_id` matches logged in user `id`**
+**Restrictions: Admin or `user_id` matches logged in user `id`**
 
-- | POST | **/api/todos** | Adds a list item to Wunderlist using information sent inside the `request body` in `/json/`. Example body: { "user_id": 1, "title": "Take out trash", "due_date": null, "date_completed": null, "completed": "false" } `user_id` and `title` are **required**. Defaults for `due_date` and `date_completed` is **null**, default `completed` is **false**. | Returns newly added list item
+- | POST | **/api/todos** | Adds a list item to Wunderlist using information sent inside the `request body` in `/json/`. Example body: { "user_id": 1, "title": "Take out trash", "due_date": null, "date_completed": null, "completed": false } `user_id` and `title` are **required**. Defaults for `due_date` and `date_completed` is **null**, default `completed` is **false**. | Returns newly added list item
 
 **Restrictions: Admin or user `id` matches `user_id` field of the todo item**
 
 - | PUT | **/api/todos/:id** | Takes `id`(list item id) as a parameter from url. Updates the list item using information sent inside the `request body` in `/json/`. | Returns the newly updated list item
 
 - | DELETE | **/api/todos/:id** | Takes `id`(list item id) as a parameter from url. Deletes the list item. | Returns the list item that was deleted
+
+Note: For POST and PUT requests of todo items, if `completed` is changed, `date_completed` will also change, unless specifically included in the request body.  
+examples:
+
+- POST request body { "user_id": 1, "title": "Take out trash", "completed": true } will add the item with the `date_completed` as the time it was posted.
+- PUT request {"completed": false} on the same item will update `date_completed` to be null
+- PUT request {"completed": true, "date_completed": "2020-01-01"} will set `date_completed` to the date sent in the request

@@ -1,4 +1,4 @@
-const db = require("../database/dbConfig");
+const db = require("../db/knex");
 
 module.exports = {
   getUsers,

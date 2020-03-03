@@ -1,24 +1,30 @@
+const { db_url } = require("./config");
+
 module.exports = {
   development: {
-    client: "sqlite3",
-    connection: { filename: "./database/users.db3" },
-    useNullAsDefault: true,
+    client: "pg",
+    connection: db_url,
     migrations: {
-      directory: "./database/migrations"
+      directory: "./db/migrations"
     },
-    seeds: { directory: "./database/seeds" }
+    seeds: { directory: "./db/seeds" }
   },
   testing: {
-    client: "sqlite3",
-    connection: {
-      filename: "./database/test.db3"
-    },
-    useNullAsDefault: true,
+    client: "pg",
+    connection: db_url,
     migrations: {
-      directory: "./database/migrations"
+      directory: "./db/migrations"
     },
     seeds: {
-      directory: "./database/seeds"
+      directory: "./db/seeds"
     }
+  },
+  production: {
+    client: "pg",
+    connection: db_url,
+    migrations: {
+      directory: "./db/migrations"
+    },
+    seeds: { directory: "./db/seeds" }
   }
 };

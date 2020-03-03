@@ -32,8 +32,15 @@ router.get("/:id", restrictedItem, async (req, res) => {
 });
 
 router.post("/", isSignedIn, verifyNewItem, async (req, res) => {
-  const newItem = req.body;
   try {
+    const newItem = {
+      ...req.body,
+      date_completed: req.body.date_completed
+        ? req.body.date_completed
+        : req.body.completed
+        ? new Date()
+        : null
+    };
     const postedItem = await TodosDb.add(newItem);
     res.status(201).json(postedItem);
   } catch (err) {
@@ -65,8 +72,19 @@ router.delete("/:id", restrictedItem, async (req, res) => {
 
 router.put("/:id", restrictedItem, async (req, res) => {
   const { id } = req.params;
-  const changes = req.body;
+
   try {
+    const preUpdate = await TodosDb.getItemById(id);
+    const changes = {
+      ...req.body,
+      date_completed: req.body.date_completed
+        ? req.body.date_completed
+        : req.body.completed
+        ? !preUpdate.completed
+          ? new Date()
+          : preUpdate.date_completed
+        : null
+    };
     const changedItem = await TodosDb.update(id, changes);
     if (changedItem === 0) res.status(400).json({ message: "no changes made" });
     else res.status(200).json(changedItem);
@@ -80,7 +98,7 @@ router.put("/:id", restrictedItem, async (req, res) => {
 
 function verifyNewItem(req, res, next) {
   const newItem = req.body;
-  if (newItem.title && newItem.user_id) next();
+  if (newItem.title && (newItem.user_id || newItem.user_id === 0)) next();
   else res.status(403).json({ message: "title and user_id fields required" });
 }
 
