@@ -22,7 +22,8 @@ router.get("/:id", restrictedItem, async (req, res) => {
   const { id } = req.params;
   try {
     const listItem = await TodosDb.getItemById(id);
-    res.status(200).json(listItem);
+    const recurring = await TodosDb.getRecurring(id);
+    res.status(200).json({ ...listItem, recurring });
   } catch (err) {
     res.status(500).json({
       message: "could not retrieve Wunderlist item at specified id",
