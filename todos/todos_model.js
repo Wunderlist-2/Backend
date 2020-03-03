@@ -7,7 +7,8 @@ module.exports = {
   getUserId,
   add,
   remove,
-  update
+  update,
+  getRecurring
 };
 
 const checkBoolean = obj => {
@@ -76,4 +77,16 @@ function update(id, changes) {
     });
 }
 
-function setRecurring(id, sequence) {}
+function getRecurring(item_id) {
+  return db("recurring as r")
+    .where("r.todo_id", item_id)
+    .select(
+      "r.sunday",
+      "r.monday",
+      "r.tuesday",
+      "r.wednesday",
+      "r.thursday",
+      "r.friday",
+      "r.saturday"
+    );
+}
