@@ -29,23 +29,28 @@ const restrictedUser = (req, res, next) => {
 
 const restrictedItem = async (req, res, next) => {
   const { id } = req.params;
-  const userId = await TodosDb.getUserId(id);
-  if (req.session && req.session.user)
-    if (id) {
-      if (req.session.user.id == userId || req.session.user.type === "admin")
-        next();
+  try {
+    await TodosDb.getItemById(id);
+    const userId = await TodosDb.getUserId(id);
+    if (req.session && req.session.user)
+      if (id) {
+        if (req.session.user.id == userId || req.session.user.type === "admin")
+          next();
+        else
+          res.status(401).json({
+            message:
+              "You do not have sufficient priviledges to perform this action."
+          });
+      } else if (req.session.user.type === "admin") next();
       else
         res.status(401).json({
           message:
             "You do not have sufficient priviledges to perform this action."
         });
-    } else if (req.session.user.type === "admin") next();
-    else
-      res.status(401).json({
-        message:
-          "You do not have sufficient priviledges to perform this action."
-      });
-  else res.status(400).json({ message: "Not logged in", isLoggedIn: false });
+    else res.status(400).json({ message: "Not logged in", isLoggedIn: false });
+  } catch (err) {
+    res.status(400).json({ message: `Item at id ${id} does not exist` });
+  }
 };
 
 const adminOnly = (req, res, next) => {
