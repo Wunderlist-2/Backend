@@ -20,7 +20,7 @@
 
 ### BASE URL
 
-**https://wunderlist-v2.herokuapp.com**
+**https://wunderlist-b.herokuapp.com**
 
 ### AUTH
 

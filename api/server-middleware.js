@@ -9,12 +9,13 @@ const logger = require("./logger");
 const sessionConfig = {
   name: name,
   secret: secret,
+  proxy: node_env === "production" ? true : false,
   cookie: {
     maxAge: 1000 * 60 * 60, //60 minutes
     secure: node_env === "production" ? true : false,
-    httpOnly: true
+    httpOnly: node_env === "production" ? false : true
   },
-  resave: false,
+  resave: node_env === "production" ? true : false,
   saveUninitialized: false //GDPR laws against setting cookies auto
 };
 
