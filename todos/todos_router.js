@@ -42,8 +42,11 @@ router.post("/", isSignedIn, verifyNewItem, async (req, res) => {
         ? new Date()
         : null
     };
-    const postedItem = await TodosDb.add(newItem);
-    res.status(201).json(postedItem);
+    const updatedList = await TodosDb.add(newItem);
+    res.status(201).json({
+      message: "Item added successfully",
+      updated_list: updatedList
+    });
   } catch (err) {
     res.status(500).json({
       message: "could not create new todos item",
@@ -55,14 +58,11 @@ router.post("/", isSignedIn, verifyNewItem, async (req, res) => {
 router.delete("/:id", restrictedItem, async (req, res) => {
   const { id } = req.params;
   try {
-    const deletedItem = await TodosDb.remove(id);
-    if (deletedItem === 0)
-      res.status(400).json({ message: "could not delete item - user error" });
-    else
-      res.status(200).json({
-        message: "Item deleted successfully",
-        deleted_item: deletedItem
-      });
+    const updatedList = await TodosDb.remove(id);
+    res.status(200).json({
+      message: "Item deleted successfully",
+      updated_list: updatedList
+    });
   } catch (err) {
     res.status(500).json({
       message: "could not delete item at specified id - server error",
@@ -73,7 +73,6 @@ router.delete("/:id", restrictedItem, async (req, res) => {
 
 router.put("/:id", restrictedItem, async (req, res) => {
   const { id } = req.params;
-
   try {
     const preUpdate = await TodosDb.getItemById(id);
     const changes = {
@@ -86,9 +85,11 @@ router.put("/:id", restrictedItem, async (req, res) => {
           : preUpdate.date_completed
         : null
     };
-    const changedItem = await TodosDb.update(id, changes);
-    if (changedItem === 0) res.status(400).json({ message: "no changes made" });
-    else res.status(200).json(changedItem);
+    const updatedList = await TodosDb.update(id, changes);
+    res.status(200).json({
+      message: "Item updated successfully",
+      updated_list: updatedList
+    });
   } catch (err) {
     res.status(500).json({
       message: "could not update item at specified id",
@@ -99,8 +100,18 @@ router.put("/:id", restrictedItem, async (req, res) => {
 
 function verifyNewItem(req, res, next) {
   const newItem = req.body;
-  if (newItem.title && (newItem.user_id || newItem.user_id === 0)) next();
-  else res.status(403).json({ message: "title and user_id fields required" });
+  if (newItem.title && newItem.user_id) {
+    if (
+      req.session.user.id == newItem.user_id ||
+      req.session.user.type === "admin"
+    )
+      next();
+    else
+      res.status(401).json({
+        message:
+          "You do not have sufficient priviledges to perform this action."
+      });
+  } else res.status(400).json({ message: "title and user_id fields required" });
 }
 
 module.exports = router;

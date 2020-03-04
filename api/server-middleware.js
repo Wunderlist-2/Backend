@@ -11,7 +11,7 @@ const sessionConfig = {
   secret: secret,
   cookie: {
     maxAge: 1000 * 60 * 60, //60 minutes
-    secure: node_env === "true" ? true : false,
+    secure: node_env === "production" ? true : false,
     httpOnly: true
   },
   resave: false,
