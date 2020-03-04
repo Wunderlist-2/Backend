@@ -12,7 +12,7 @@ const sessionConfig = {
   proxy: node_env === "production" ? true : false,
   cookie: {
     maxAge: 1000 * 60 * 60, //60 minutes
-    secure: node_env === "production" ? true : false,
+    secure: false,
     httpOnly: node_env === "production" ? false : true
   },
   resave: node_env === "production" ? true : false,
