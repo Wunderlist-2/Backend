@@ -1,10 +1,10 @@
-const express = require("express");
-const session = require("express-session");
-const { name, secret, node_env } = require("../config");
-const helmet = require("helmet");
-const cors = require("cors");
+const express = require('express')
+const session = require('express-session')
+const { name, secret, node_env } = require('../config')
+const helmet = require('helmet')
+const cors = require('cors')
 
-const logger = require("./logger");
+const logger = require('./logger')
 
 const sessionConfig = {
   name: name,
@@ -16,13 +16,12 @@ const sessionConfig = {
     httpOnly: node_env === "production" ? false : true
   },
   resave: node_env === "production" ? true : false,
-  saveUninitialized: false //GDPR laws against setting cookies auto
+  saveUninitialized: true,
 };
-
 module.exports = server => {
-  server.use(helmet());
-  server.use(express.json());
-  server.use(cors());
-  server.use(session(sessionConfig));
-  server.use(logger);
-};
+  server.use(helmet())
+  server.use(express.json())
+  server.use(cors())
+  server.use(session(sessionConfig))
+  server.use(logger)
+}
