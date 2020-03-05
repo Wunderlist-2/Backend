@@ -11,7 +11,7 @@ const sessionConfig = {
   secret: secret,
   proxy: node_env === 'production' ? true : false,
   cookie: {
-    maxAge: 1000 * 60 * 60, //60 minutes
+    maxAge: 1000 * 60 * 60, //60 minute
     secure: false,
     httpOnly: node_env === 'production' ? false : true,
   },
@@ -24,4 +24,15 @@ module.exports = server => {
   server.use(cors())
   server.use(session(sessionConfig))
   server.use(logger)
+}
+
+module.exports = server => {
+  server.use(express.json())
+  server.use(helmet())
+  server.use(session(sessionConfig))
+  // server.use(cors());
+  server.use(logger)
+  server.use(useCors)
+  server.use(cors(corsConfig))
+  server.options('*', cors(corsConfig))
 }
