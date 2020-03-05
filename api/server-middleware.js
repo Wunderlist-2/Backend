@@ -9,15 +9,15 @@ const logger = require('./logger')
 const sessionConfig = {
   name: name,
   secret: secret,
-  proxy: node_env === "production" ? true : false,
+  proxy: node_env === 'production' ? true : false,
   cookie: {
     maxAge: 1000 * 60 * 60, //60 minutes
     secure: false,
-    httpOnly: node_env === "production" ? false : true
+    httpOnly: node_env === 'production' ? false : true,
   },
-  resave: node_env === "production" ? true : false,
+  resave: node_env === 'production' ? true : false,
   saveUninitialized: true,
-};
+}
 module.exports = server => {
   server.use(helmet())
   server.use(express.json())
