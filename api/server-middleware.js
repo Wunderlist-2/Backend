@@ -25,14 +25,3 @@ module.exports = server => {
   server.use(session(sessionConfig))
   server.use(logger)
 }
-
-module.exports = server => {
-  server.use(express.json())
-  server.use(helmet())
-  server.use(session(sessionConfig))
-  // server.use(cors());
-  server.use(logger)
-  server.use(useCors)
-  server.use(cors(corsConfig))
-  server.options('*', cors(corsConfig))
-}
