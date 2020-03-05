@@ -18,10 +18,15 @@ const sessionConfig = {
   resave: node_env === 'production' ? true : false,
   saveUninitialized: true,
 }
+const config = {
+  origin: /.+/s,
+  credentials: true,
+}
+
 module.exports = server => {
   server.use(helmet())
   server.use(express.json())
-  server.use(cors())
+  server.use(cors(config))
   server.use(session(sessionConfig))
   server.use(logger)
 }
