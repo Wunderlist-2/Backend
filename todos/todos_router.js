@@ -83,7 +83,8 @@ router.put("/:id", restrictedItem, async (req, res) => {
         ? !preUpdate.completed
           ? new Date()
           : preUpdate.date_completed
-        : null
+        : null,
+      user_id: preUpdate.user_id
     };
     const updatedList = await TodosDb.update(id, changes);
     res.status(200).json({
